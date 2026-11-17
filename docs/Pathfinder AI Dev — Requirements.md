@@ -1,10 +1,10 @@
-# GLaDOS AI Dev — Requirements
+# Pathfinder AI Dev — Requirements
 
 Nov 16, 2026 · @Grant Terris
 
 ## Overview
 
-GLaDOS AI Dev is a cloud-hosted service that runs a shared pool of specialized AI agents against Jira tickets. Each ticket gets its own long-running dev container, and a configurable pipeline of agents takes it from human-written requirements to a reviewed GitHub PR, with a human approving the plan and the design before work moves on. The default pipeline has four agents (Planner, Designer, Implementer, Tester); people can add, change and remove agents, and edit each agent's system prompt, model, skills and tools.
+Pathfinder AI Dev is a cloud-hosted service that runs a shared pool of specialized AI agents against Jira tickets. Each ticket gets its own long-running dev container, and a configurable pipeline of agents takes it from human-written requirements to a reviewed GitHub PR, with a human approving the plan and the design before work moves on. The default pipeline has four agents (Planner, Designer, Implementer, Tester); people can add, change and remove agents, and edit each agent's system prompt, model, skills and tools.
 
 **In scope**
 
@@ -195,7 +195,7 @@ An internal web app shows what the system is doing and lets the team test and de
 
 ## End-to-end flow
 
-&#91;embedded content: GLaDOS AI Dev ticket flow · 4 agents, 3 approval gates\]
+&#91;embedded content: Pathfinder AI Dev ticket flow · 4 agents, 3 approval gates\]
 
 The diagram shows the default pipeline and predates the final approval gate and the Planner's design decision. A code bug found by the Tester loops back to the Implementer without a human, up to 3 times. A requirements question from any agent pauses the run for a human. Any artifact can be denied with comments, and its agent takes another turn. Approved artifacts feed the repo's knowledge base, and agents keep the repo's memory up to date as they work.
 

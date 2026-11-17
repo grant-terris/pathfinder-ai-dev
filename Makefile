@@ -1,4 +1,4 @@
-# GLaDOS AI Dev — build and validation entry points.
+# Pathfinder AI Dev — build and validation entry points.
 #
 #   make tools      download pinned CLI tools into .bin/
 #   make validate   build every Kustomize overlay and validate the output

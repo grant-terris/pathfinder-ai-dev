@@ -1,4 +1,4 @@
-# GLaDOS AI Dev
+# Pathfinder AI Dev
 
 A shared pool of AI agents (Planner, Designer, Implementer, Tester) that take a job from
 written requirements to tested code on its own git branch, with a human reviewing every
@@ -6,9 +6,9 @@ artifact. Phase 1 runs on Azure AKS and is driven from an internal web app.
 
 ## Documents
 
-- [Requirements](docs/GLaDOS%20AI%20Dev%20—%20Requirements.md): the full target system
-- [Architecture](docs/GLaDOS%20AI%20Dev%20—%20Architecture.md): how it maps onto Kubernetes
-- [Phase 1 MVP HLD](docs/GLaDOS%20AI%20Dev%20—%20Phase%201%20MVP%20HLD.md): what's being built now
+- [Requirements](docs/Pathfinder%20AI%20Dev%20—%20Requirements.md): the full target system
+- [Architecture](docs/Pathfinder%20AI%20Dev%20—%20Architecture.md): how it maps onto Kubernetes
+- [Phase 1 MVP HLD](docs/Pathfinder%20AI%20Dev%20—%20Phase%201%20MVP%20HLD.md): what's being built now
 - [Phase 1 plan](docs/phase1-plan.md): decisions log and milestones
 
 ## Layout

@@ -1,4 +1,4 @@
-# GLaDOS AI Dev — Phase 1 Milestone Plan
+# Pathfinder AI Dev — Phase 1 Milestone Plan
 
 Status: **draft, awaiting approval.** Nov 16, 2026 (milestones rewritten for the expanded scope). Nov 17, 2026: modular agents and a configurable pipeline (A1 to A8); M1 done.
 

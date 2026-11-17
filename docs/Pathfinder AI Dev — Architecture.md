@@ -1,10 +1,10 @@
-# GLaDOS AI Dev — Architecture
+# Pathfinder AI Dev — Architecture
 
 Nov 16, 2026 · @Grant Terris · Draft (revised Nov 16 and Nov 17, 2026: decisions from `docs/phase1-plan.md`, upstream fact checks)
 
 ## Overview
 
-This is a first draft of how GLaDOS AI Dev maps onto Kubernetes. Shared services run in one namespace, monitoring agents run as scheduled jobs in another, and each active ticket gets its own namespace with a single sandbox pod. All add-ons are installed by the team, with no cloud-provider-specific features (PLT-9, PLT-10).
+This is a first draft of how Pathfinder AI Dev maps onto Kubernetes. Shared services run in one namespace, monitoring agents run as scheduled jobs in another, and each active ticket gets its own namespace with a single sandbox pod. All add-ons are installed by the team, with no cloud-provider-specific features (PLT-9, PLT-10).
 
 &#91;embedded content: Proposed cluster layout · shared services, monitors, and one namespace per active ticket\]
 

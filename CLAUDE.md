@@ -1,12 +1,12 @@
-# GLaDOS AI Dev
+# Pathfinder AI Dev
 
 ## Source of truth
 
 Read these before changing anything. Requirement IDs (PLT-, LIF-, PIP-, EDT-, MON-, WEB-, …) come from the requirements doc.
 
-1. `docs/GLaDOS AI Dev — Phase 1 MVP HLD.md`: **what we build now; it decides scope.** Anything it marks "Later" or "Deferred" is out of scope.
-2. `docs/GLaDOS AI Dev — Requirements.md`: the full target system.
-3. `docs/GLaDOS AI Dev — Architecture.md`: how the full system maps onto Kubernetes.
+1. `docs/Pathfinder AI Dev — Phase 1 MVP HLD.md`: **what we build now; it decides scope.** Anything it marks "Later" or "Deferred" is out of scope.
+2. `docs/Pathfinder AI Dev — Requirements.md`: the full target system.
+3. `docs/Pathfinder AI Dev — Architecture.md`: how the full system maps onto Kubernetes.
 4. `docs/phase1-plan.md`: milestone plan, plus the resolutions agreed for conflicts between the docs.
 
 If the docs conflict, don't pick a side on your own. Raise it.

@@ -1,4 +1,4 @@
-# GLaDOS AI Dev — Phase 1 MVP HLD
+# Pathfinder AI Dev — Phase 1 MVP HLD
 
 Nov 16, 2026 · @Grant Terris · Draft (revised Nov 16 and Nov 17, 2026 with the decisions in `docs/phase1-plan.md`)
 
