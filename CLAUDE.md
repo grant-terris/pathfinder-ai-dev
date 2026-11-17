@@ -41,7 +41,7 @@ If the docs conflict, don't pick a side on your own. Raise it.
 | Path | Contents |
 | --- | --- |
 | `infra/` | Terraform for Azure and the Flux bootstrap |
-| `deploy/base/` | Plain Kubernetes YAML for every GLaDOS component, with no Azure settings |
+| `deploy/base/` | Plain Kubernetes YAML for every Pathfinder component, with no Azure settings |
 | `deploy/overlays/aks/` | Kustomize patches for AKS only: internal LB annotation, StorageClass provisioner |
 
 Approved additions:

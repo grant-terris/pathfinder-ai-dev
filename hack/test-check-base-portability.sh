@@ -19,7 +19,7 @@ printf 'apiVersion: v1\nkind: Namespace\nmetadata:\n  name: x\n' > "$tmp/clean/n
 cases=(
   'service.beta.kubernetes.io/azure-load-balancer-internal: "true"'
   'provisioner: disk.csi.azure.com'
-  'image: myregistry.azurecr.io/glados/orchestrator:1.0'
+  'image: myregistry.azurecr.io/pathfinder/orchestrator:1.0'
   'service.beta.kubernetes.io/aws-load-balancer-internal: "true"'
   'provisioner: ebs.csi.aws.com'
   'cloud.google.com/load-balancer-type: Internal'

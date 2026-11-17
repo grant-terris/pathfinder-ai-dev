@@ -51,7 +51,7 @@ validate: portability $(KUBECONFORM)
 	@for o in $(OVERLAYS); do \
 	  out="$(BUILD)/$${o//\//-}.yaml"; \
 	  kubectl kustomize "deploy/overlays/$$o" > "$$out"; \
-	  if grep -q 'placeholder.glados.dev' "$$out"; then \
+	  if grep -q 'placeholder.pathfinder.dev' "$$out"; then \
 	    echo "validate: FAILED: overlay $$o still contains a placeholder value from base" >&2; exit 1; \
 	  fi; \
 	  printf '%-16s ' "$$o"; \

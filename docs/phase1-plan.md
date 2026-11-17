@@ -17,7 +17,7 @@ updated on Nov 16, 2026 to match the decisions below.
 | D18 | Deployment repo on **GitHub**; Flux uses an **SSH deploy key** (read/write, since bootstrap commits to the repo). |
 | D19 | Peer to an **existing hub VNet**. **Private AKS API server.** Terraform, including the Flux bootstrap, runs from a VPN-connected machine. The API server's private DNS zone must resolve from the hub. |
 | D14 | Previews by **hostname per job** (`<job-id>.preview.<internal-domain>`) through an Azure Private DNS wildcard record. |
-| D2, D25 | One database `glados` with schemas `orchestrator` and `memory`. CNPG `standard` image (includes pgvector). 2 instances. No backups in Phase 1. |
+| D2, D25 | One database `pathfinder` with schemas `orchestrator` and `memory`. CNPG `standard` image (includes pgvector). 2 instances. No backups in Phase 1. |
 | D20 | Platform secrets: **SOPS + age**, decrypted by Flux. Terraform creates the age key Secret once. |
 | D21 | runc, a hardened securityContext and a per-job NetworkPolicy are accepted for Phase 1. `runtimeClassName` stays configurable. |
 | D16 | Generic dev image toolchain: **Node.js / TypeScript** only. |
@@ -29,7 +29,7 @@ updated on Nov 16, 2026 to match the decisions below.
 | # | Decision |
 | --- | --- |
 | S2 | **Every artifact can be approved or denied with comments.** On a denial, the agent that produced it takes another turn **in its existing session**. Gates are per stage (A3); in the default pipeline they are plan, design (if run) and final review, with Implementer → Tester automatic. Stages without a gate are reviewed at the final gate. |
-| C5, C6 | A final approval gate always follows the last stage. The runner pushes `glados/<job-id>` after every run of a stage with `push_branch` set; in the default pipeline that is the Implementer and the Tester (Nov 17, 2026), so added tests reach the branch. |
+| C5, C6 | A final approval gate always follows the last stage. The runner pushes `pathfinder/<job-id>` after every run of a stage with `push_branch` set; in the default pipeline that is the Implementer and the Tester (Nov 17, 2026), so added tests reach the branch. |
 | S5 | **Skippable stages** (generalised by A3). A gated stage can skip later stages marked `skippable`: its `outcome.json` lists them in `skip` with a reason, and the decision is approved or denied along with that artifact. Default: the Planner decides whether the Designer runs. |
 | D11 | **Failure routes** (generalised by A3). A stage can route a `failed` outcome back to an earlier stage, up to a limit, then the job pauses for a person. Default: Tester → Implementer, limit **3**. |
 | D13 | A requirements question pauses the job. The answer is delivered to the asking agent's session, which resumes. |
@@ -47,7 +47,7 @@ updated on Nov 16, 2026 to match the decisions below.
 | A1 | **Agents are modular configuration.** Add, edit and delete agents on the Agents page. No code change, image build or deployment per agent; every agent runs in the job's dev container through the same runner and `AgentRuntime`. |
 | A2 | **Agent config:** `name` (slug), display name, description, system prompt, LLM endpoint (by name) and model, skills (S7), tools (A4), `inputs` (artifact kinds it reads), `output` (exit artifact kind and required files), limits (timeout and max turns per run). |
 | A3 | **Pipeline = ordered list of stages.** Each stage: `id`, `agent`, `gate` (bool), `skippable` (bool), `on_fail` (`{return_to: <earlier stage>, max: N}` or none), `push_branch` (bool). A final review always follows the last stage. An agent runs at most one stage, so "the agent that produced it" stays unambiguous. |
-| A4 | **Tools:** an allowlist of harness-neutral built-in tool names (`shell`, `read`, `edit`, `write`, `web_fetch`, `web_search`) and GLaDOS tools (`kb_list`, `kb_read`, `memory_search`, `memory_write`, `memory_update`, `memory_delete`), plus extra **MCP servers** by URL (streamable HTTP), with optional header values taken from a platform Secret key. Public servers use the normal internet egress; a server inside the cluster or VNet declares an egress target (CIDR and port, or namespace and pod labels) that the orchestrator adds to the job's NetworkPolicy only when a pinned agent uses it. The harness adapter rejects tool names it can't map, at save time. |
+| A4 | **Tools:** an allowlist of harness-neutral built-in tool names (`shell`, `read`, `edit`, `write`, `web_fetch`, `web_search`) and Pathfinder tools (`kb_list`, `kb_read`, `memory_search`, `memory_write`, `memory_update`, `memory_delete`), plus extra **MCP servers** by URL (streamable HTTP), with optional header values taken from a platform Secret key. Public servers use the normal internet egress; a server inside the cluster or VNet declares an egress target (CIDR and port, or namespace and pod labels) that the orchestrator adds to the job's NetworkPolicy only when a pinned agent uses it. The harness adapter rejects tool names it can't map, at save time. |
 | A5 | **Storage and pinning:** agent configs and the pipeline live in PostgreSQL. Every save is a new version. A job pins the pipeline version and every agent config version (and skill versions, S7) when it starts; edits apply to new jobs only, including re-runs of an open job. Each stage run records its agent version. |
 | A6 | **Built-ins are seed data.** Planner, Designer, Implementer and Tester (and the default pipeline) are loaded from `services/orchestrator/seed/` on first start, then edited and deleted like any agent. Seeds never overwrite existing records. |
 | A7 | **Validation on save:** at least one stage; every stage input is the output of an earlier stage (the job's requirements are always available); `on_fail.return_to` is an earlier stage; only gated stages can emit `skip`, and only for later `skippable` stages; an agent used by the pipeline can't be deleted until it's removed from it. Versions stay while an open job pins them. |
@@ -69,7 +69,7 @@ updated on Nov 16, 2026 to match the decisions below.
 | # | Decision |
 | --- | --- |
 | C1 | The sandbox never connects to PostgreSQL. The runner uses the orchestrator API with a per-job bearer token. NetworkPolicy blocks job namespaces from reaching the database. |
-| D24 | The orchestrator's ClusterRole covers namespaces, plus Secrets, Services, NetworkPolicies, ResourceQuotas, `sandboxes.agents.x-k8s.io` and `httproutes` in job namespaces. No `pods/exec`. On restart, it reconciles against namespaces labelled `glados.dev/job-id`. |
+| D24 | The orchestrator's ClusterRole covers namespaces, plus Secrets, Services, NetworkPolicies, ResourceQuotas, `sandboxes.agents.x-k8s.io` and `httproutes` in job namespaces. No `pods/exec`. On restart, it reconciles against namespaces labelled `pathfinder.dev/job-id`. |
 | Risk | With no login, anyone on the VPN can upload a skill, edit an agent's system prompt or tools, or register an MCP server, and all of these shape what runs in every new job's sandbox. An MCP server sees the tool calls an agent sends it. LLM-generated code shares the pod with the job's credentials. All are accepted for Phase 1 and tracked as open questions. |
 
 ### Still open
@@ -90,7 +90,7 @@ updated on Nov 16, 2026 to match the decisions below.
 ### Components
 
 - **orchestrator** (Go): deterministic state machine built from each job's pinned pipeline, queue, Kubernetes provisioner, REST API. It stores job state, agent configs, the pipeline, artifacts, the knowledge base, memory, skills and logs. It never calls an LLM. It calls the embedding endpoint only to embed memory snippets and queries, which is a mechanical step with no decisions.
-- **runner** (Go, inside the dev container): a deterministic loop. It pulls a task (which carries the pinned agent config), puts the inputs in place, starts or resumes the agent through `AgentRuntime`, uploads the outputs, pushes git after runs of stages with `push_branch`, and reports the outcome. It knows nothing about specific agents. It also serves the **GLaDOS tools** (memory and knowledge base) as a local MCP server that proxies the orchestrator API, exposing only the tools in the agent's allowlist.
+- **runner** (Go, inside the dev container): a deterministic loop. It pulls a task (which carries the pinned agent config), puts the inputs in place, starts or resumes the agent through `AgentRuntime`, uploads the outputs, pushes git after runs of stages with `push_branch`, and reports the outcome. It knows nothing about specific agents. It also serves the **Pathfinder tools** (memory and knowledge base) as a local MCP server that proxies the orchestrator API, exposing only the tools in the agent's allowlist.
 - **preview-proxy** (Go, sidecar): serves `/artifacts/…` and reverse-proxies `/` to the app on a configurable port (default 3000).
 - **webapp** (React + TypeScript, static files behind a small server): talks only to the orchestrator API.
 
@@ -105,7 +105,7 @@ type AgentRuntime interface {
     Resume(ctx context.Context, sessionID string, in TurnInput) (TurnResult, error)
 }
 // TurnInput:  pinned AgentConfig (system prompt, endpoint, model, built-in tool allowlist,
-//             MCP servers incl. the runner's GLaDOS server, limits), pinned skills dir,
+//             MCP servers incl. the runner's Pathfinder server, limits), pinned skills dir,
 //             input artifact dir (saved artifacts only), workspace path, output dir,
 //             messages []Message, prefetched memory snippets, log writer.
 // TurnResult: session ID, outputs incl. machine-readable outcome.json:
@@ -150,7 +150,7 @@ Edge cases the tests must cover:
 - A change sent to `approved` reopens the job.
 - Comments sent while a stage is running are queued for that agent's next turn.
 
-### Data (PostgreSQL `glados`)
+### Data (PostgreSQL `pathfinder`)
 
 - `orchestrator` schema:
   - `jobs`
@@ -202,7 +202,7 @@ M1, M3, M5 and M6 can start now. M6 has no dependencies and can run alongside th
   - `deploy/overlays/kind/{addons,platform}/…`
   - `clusters/aks/README.md`, `hack/check-base-portability.sh`, `hack/test-check-base-portability.sh`
   - **Moved to M2:** `.sops.yaml` (needs the age public key Terraform creates) and the ACR `images:` patch (needs the registry name). Neither gets a placeholder.
-- **StorageClass:** base defines `glados-standard` with a placeholder provisioner. The AKS patch sets `disk.csi.azure.com`
+- **StorageClass:** base defines `pathfinder-standard` with a placeholder provisioner. The AKS patch sets `disk.csi.azure.com`
   with `skuName: StandardSSD_LRS`; kind uses `rancher.io/local-path`. `provisioner` can't be changed on a live object, so
   each overlay must be correct before its first sync.
 - **Test:** every overlay builds with `kubectl kustomize`, and `kubeconform` validates the output. The portability script
@@ -215,7 +215,7 @@ M1, M3, M5 and M6 can start now. M6 has no dependencies and can run alongside th
   flux.tf, outputs.tf, terraform.tfvars.example, README.md}`.
 - **Content:**
   - **Network:** resource group; VNet and subnets; peering to the hub; Network Contributor on the subnet for the cluster identity (needed for an internal LB).
-  - **AKS:** private cluster with its private DNS zone linked to the hub. Azure CNI Overlay with the Cilium dataplane, so standard NetworkPolicy is enforced. A system node pool, plus a `jobs` node pool with the cluster autoscaler and taint `glados.dev/jobs`. **No** `web_app_routing`, **no** managed Gateway API, **no** app-routing Istio.
+  - **AKS:** private cluster with its private DNS zone linked to the hub. Azure CNI Overlay with the Cilium dataplane, so standard NetworkPolicy is enforced. A system node pool, plus a `jobs` node pool with the cluster autoscaler and taint `pathfinder.dev/jobs`. **No** `web_app_routing`, **no** managed Gateway API, **no** app-routing Istio.
   - **ACR**, with AcrPull for the kubelet identity.
   - **Private DNS** zone `<internal-domain>`, linked to the hub VNet. The wildcard record is added in M4, once the LB IP exists.
   - **Flux:** `flux_bootstrap_git` with `path = "clusters/aks"` (it can't be changed later) and a deliberate `delete_git_manifests` setting. Terraform also creates the SOPS age key Secret in `flux-system`.
@@ -244,7 +244,7 @@ M1, M3, M5 and M6 can start now. M6 has no dependencies and can run alongside th
   - `deploy/overlays/aks/platform/patches/envoyproxy-internal-lb.yaml`
   - `clusters/aks/platform.yaml` (Flux Kustomization, `dependsOn: addons`)
   - the wildcard record in `infra/dns.tf`
-- **Content:** one HTTP listener that accepts routes only from namespaces labelled `glados.dev/gateway-access: "true"`. Hostnames are `glados.<domain>` for the web app and `*.preview.<domain>` for job previews.
+- **Content:** one HTTP listener that accepts routes only from namespaces labelled `pathfinder.dev/gateway-access: "true"`. Hostnames are `pathfinder.<domain>` for the web app and `*.preview.<domain>` for job previews.
 - **Test:**
   - The Envoy Service gets a private IP from the subnet, not a public one.
   - From the VPN, `curl` works for both the web app hostname and a test `x.preview.<domain>`.
@@ -312,9 +312,9 @@ M1, M3, M5 and M6 can start now. M6 has no dependencies and can run alongside th
   - `services/preview-proxy/…`
   - `images/dev/Dockerfile` (Node.js LTS, git; the runner is added in M9)
 - **Objects per job:**
-  - Namespace with labels `glados.dev/job-id` and `glados.dev/gateway-access`.
+  - Namespace with labels `pathfinder.dev/job-id` and `pathfinder.dev/gateway-access`.
   - Secret: git credential, LLM and embedding credentials, runner token.
-  - `Sandbox` with `service: false`, a workspace `volumeClaimTemplates` entry on `glados-standard`, an init container that clones the repo and creates `glados/<job-id>` if the PVC is empty, the dev container, the preview-proxy sidecar, and a toleration for the `jobs` pool.
+  - `Sandbox` with `service: false`, a workspace `volumeClaimTemplates` entry on `pathfinder-standard`, an init container that clones the repo and creates `pathfinder/<job-id>` if the PVC is empty, the dev container, the preview-proxy sidecar, and a toleration for the `jobs` pool.
   - ClusterIP Service pointing at the preview proxy.
   - HTTPRoute for `<job-id>.preview.<domain>`.
   - NetworkPolicy: ingress only from the Gateway; egress only to DNS, the orchestrator API and the internet, excluding cluster and VNet CIDRs, plus the egress targets of MCP servers used by the job's pinned agents (A4).
@@ -372,9 +372,9 @@ M1, M3, M5 and M6 can start now. M6 has no dependencies and can run alongside th
   - Orchestrator `internal/agents/…` and `internal/skills/…`, with API endpoints:
     - Agents: `GET/POST /v1/agents`, `GET/PUT/DELETE /v1/agents/{agent}`, `GET /v1/agents/{agent}/versions[/{v}]`
     - Pipeline: `GET/PUT /v1/pipeline`, `GET /v1/pipeline/versions[/{v}]`
-    - Choices for the editor: `GET /v1/llm-endpoints`, `GET /v1/tools` (built-in and GLaDOS tool names the runtime supports)
+    - Choices for the editor: `GET /v1/llm-endpoints`, `GET /v1/tools` (built-in and Pathfinder tool names the runtime supports)
     - Skills: `GET/POST /v1/agents/{agent}/skills`, `GET/PUT/PATCH/DELETE /v1/agents/{agent}/skills/{id}`, `GET /v1/skills/{id}/versions/{v}`
-  - Runner: put the pinned skills in place at turn start; pass the agent's MCP servers to the runtime; expose only allowlisted GLaDOS tools
+  - Runner: put the pinned skills in place at turn start; pass the agent's MCP servers to the runtime; expose only allowlisted Pathfinder tools
   - Web app: **Agents** page: agent list (with "not in pipeline" marked), agent editor (name, description, system prompt, endpoint and model, tools and MCP servers, inputs and output, limits, skills), version history with diff, and a **pipeline editor** (add, remove and reorder stages; gate, skippable, failure route, push branch) that shows validation errors before saving
 - **Rules:**
   - Every agent or pipeline save creates a new version; validation (A7) and `AgentRuntime.Validate` (A4) run first.

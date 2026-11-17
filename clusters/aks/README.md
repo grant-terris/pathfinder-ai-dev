@@ -9,6 +9,6 @@ Flux Kustomizations defined here, applied in order:
 | File | Syncs | Depends on | Milestone |
 | --- | --- | --- | --- |
 | `addons.yaml` | `deploy/overlays/aks/addons` (Envoy Gateway, agent-sandbox, CloudNativePG) | — | M3 |
-| `platform.yaml` | `deploy/overlays/aks/platform` (GLaDOS services) | `addons` | M4 |
+| `platform.yaml` | `deploy/overlays/aks/platform` (Pathfinder services) | `addons` | M4 |
 
 Per-job namespaces are created at runtime by the orchestrator, never by Flux.

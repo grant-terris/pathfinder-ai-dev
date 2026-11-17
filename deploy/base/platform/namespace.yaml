@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: glados-system
+  name: pathfinder-system
   labels:
-    app.kubernetes.io/part-of: glados
+    app.kubernetes.io/part-of: pathfinder
     # The internal Gateway accepts routes only from namespaces with this label (M4).
-    glados.dev/gateway-access: "true"
+    pathfinder.dev/gateway-access: "true"
