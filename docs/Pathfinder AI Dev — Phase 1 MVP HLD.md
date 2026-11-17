@@ -161,4 +161,5 @@ The deployment repo lives on GitHub, but Flux's generic bootstrap works with any
 - [x] Is the agent set fixed? No. Agents and the pipeline are configuration, edited on the Agents page (AGT-1 to AGT-10).
 - [ ] Who may add or change agents, skills and MCP servers, given there is no login in Phase 1?
 - [ ] Which embedding model does memory search use?
-- [ ] Hub VNet details, the internal DNS domain for previews, and the GitHub repo for Flux.
+- [ ] Hub VNet details and the internal DNS domain for previews.
+- [x] Which repo does Flux sync? `grant-terris/pathfinder-ai-dev`, branch `main`.

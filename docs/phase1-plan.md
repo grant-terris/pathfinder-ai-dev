@@ -14,7 +14,7 @@ updated on Nov 16, 2026 to match the decisions below.
 | D1 | Add-ons: vendored, pinned upstream release YAML under `deploy/base/addons/`. No Helm. |
 | D7, D8 | Folders: `clusters/aks/`, `services/`, `images/`, `hack/`, and a `deploy/overlays/kind/` overlay for local testing. |
 | D17 | **Azure Container Registry**, created by Terraform with AcrPull for AKS. The AKS overlay gets a third patch: a Kustomize `images:` rewrite to the ACR hostname. Base uses registry-neutral image names. |
-| D18 | Deployment repo on **GitHub**; Flux uses an **SSH deploy key** (read/write, since bootstrap commits to the repo). |
+| D18 | Deployment repo on **GitHub**: `grant-terris/pathfinder-ai-dev`, branch `main` (Nov 17, 2026). Flux uses an **SSH deploy key** (read/write, since bootstrap commits to the repo). Milestone work stays on branches until it's merged to `main`, and Flux syncs only `main`. |
 | D19 | Peer to an **existing hub VNet**. **Private AKS API server.** Terraform, including the Flux bootstrap, runs from a VPN-connected machine. The API server's private DNS zone must resolve from the hub. |
 | D14 | Previews by **hostname per job** (`<job-id>.preview.<internal-domain>`) through an Azure Private DNS wildcard record. |
 | D2, D25 | One database `pathfinder` with schemas `orchestrator` and `memory`. CNPG `standard` image (includes pgvector). 2 instances. No backups in Phase 1. |
@@ -78,7 +78,6 @@ updated on Nov 16, 2026 to match the decisions below.
 | --- | --- |
 | Hub VNet details (subscription, resource group, name, address space, linked Private DNS zones) | M2 |
 | Internal DNS domain for previews | M2, M4 |
-| GitHub repo (`owner/name`) for Flux | M2 |
 | Agent harness (must resume sessions and support MCP or equivalent tools) | M13 |
 | LLM endpoint and credentials | M13 |
 | Embedding model and endpoint | Production use of M12 (kind tests don't need it) |
@@ -177,7 +176,7 @@ Each milestone ends with an approval stop. "kind" means the local cluster overla
 | # | Milestone | Needs AKS? | Blocked on |
 | --- | --- | --- | --- |
 | M1 | Repo skeleton and Kustomize structure | No | — |
-| M2 | Terraform: private AKS, ACR, DNS, Flux bootstrap | Yes | Hub VNet, domain, GitHub repo |
+| M2 | Terraform: private AKS, ACR, DNS, Flux bootstrap | Yes | Hub VNet, domain |
 | M3 | Cluster add-ons via Flux | kind first | — |
 | M4 | Internal Gateway and preview DNS | Yes, for the LB | Domain |
 | M5 | PostgreSQL and schema | kind first | — |
