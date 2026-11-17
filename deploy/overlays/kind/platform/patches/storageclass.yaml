@@ -1,0 +1,7 @@
+# kind ships the local-path provisioner. It can't expand volumes.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: glados-standard
+provisioner: rancher.io/local-path
+allowVolumeExpansion: false

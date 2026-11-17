@@ -1,0 +1,5 @@
+# Local kind cluster add-ons, for testing without AKS.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../base/addons

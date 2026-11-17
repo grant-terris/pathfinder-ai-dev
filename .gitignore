@@ -1,0 +1,27 @@
+# Local tool downloads and build output
+/.bin/
+/.build/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+*.tfvars
+!*.tfvars.example
+.terraform.tfrc
+
+# Secrets: only SOPS-encrypted files are committed
+*.agekey
+*.dec.yaml
+.env
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Node / Go build output (services/, from M7 onward)
+node_modules/
+dist/

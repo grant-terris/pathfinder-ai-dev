@@ -1,0 +1,9 @@
+# Azure Disk CSI, Standard SSD LRS: the same driver and SKU as AKS's built-in
+# managed-csi class. https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: glados-standard
+provisioner: disk.csi.azure.com
+parameters:
+  skuName: StandardSSD_LRS

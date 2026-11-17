@@ -1,0 +1,16 @@
+# The one StorageClass every GLaDOS workload requests. The driver behind it is chosen
+# per cluster by an overlay patch, so workloads never change when the driver does.
+#
+# The provisioner below is a deliberate placeholder: every overlay must replace it.
+# `make validate` fails if a built overlay still contains it. The provisioner field
+# can't be changed on a live object, so it must be right before the first sync.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: glados-standard
+  labels:
+    app.kubernetes.io/part-of: glados
+provisioner: placeholder.glados.dev/set-by-overlay
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: glados-system
+  labels:
+    app.kubernetes.io/part-of: glados
+    # The internal Gateway accepts routes only from namespaces with this label (M4).
+    glados.dev/gateway-access: "true"

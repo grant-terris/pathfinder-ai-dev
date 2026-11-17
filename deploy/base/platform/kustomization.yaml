@@ -1,0 +1,7 @@
+# GLaDOS services. Plain Kubernetes YAML with no cloud-specific settings (PLT-9).
+# Cloud-specific values are patched in by deploy/overlays/<cluster>/platform.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - storageclass.yaml

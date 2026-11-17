@@ -1,0 +1,5 @@
+# Cluster add-ons: pinned upstream release YAML, vendored by hack/vendor-addons.sh (M3).
+# Must stay free of cloud-specific settings (PLT-9); checked by hack/check-base-portability.sh.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources: []

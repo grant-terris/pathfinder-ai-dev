@@ -1,0 +1,10 @@
+# AKS platform overlay. Holds ONLY Azure-specific patches:
+#   - StorageClass provisioner (Azure Disk CSI)               [this milestone]
+#   - Internal load balancer annotation on the EnvoyProxy     [M4]
+#   - images: rewrite to the Azure Container Registry         [added once the ACR name exists, M2]
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../base/platform
+patches:
+  - path: patches/storageclass.yaml
